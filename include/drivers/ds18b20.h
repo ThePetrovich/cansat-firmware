@@ -11,11 +11,11 @@
 
 #include <stdint.h>
 
-/* BMP280 Chip Select pin */
+/* DS18B20 Data pin */
 #define DS18B20_PORT		PORTE
 #define DS18B20_DDR			DDRE
 #define DS18B20_PIN			PINE
-#define DS18B20_PIN_DATA	PE2
+#define DS18B20_PIN_DATA	PE7
 
 #define DS_RESOLUTION_12BIT 625
 

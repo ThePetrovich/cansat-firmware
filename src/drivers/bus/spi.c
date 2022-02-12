@@ -43,6 +43,7 @@ void spi_stop(void)
 
 	/* Disable SPI */
 	SPCR = 0;
+	SPSR = 0;
 
 	arch_exitCriticalSection();
 }

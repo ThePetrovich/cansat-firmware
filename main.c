@@ -39,20 +39,28 @@ int main(void)
 	stdout = &mystdout;
 	
 	printf("Hello from cansat-firmware test\r\n");
-	adxl345_init();
 	bmp280_init();
+	adxl345_init();
+	
+	double tmp1 = 0;
+	double prs = 0;
+	double ax = 0;
+	double ay = 0;
+	double az = 0;
+	double tmp2 = 0;
+	
+	ds18b20_request_temperature();
 	
     while (1) 
     {
+		tmp1 = bmp280_read_temperature();
+		prs = bmp280_read_pressure();
+		ax = adxl345_read_x();
+		ay = adxl345_read_y();
+		az = adxl345_read_z();
 		ds18b20_request_temperature();
-		_delay_ms(1000);
-		
-		double tmp1 = bmp280_read_temperature();
-		double prs = bmp280_read_pressure();
-		double ax = adxl345_read_x();
-		double ay = adxl345_read_y();
-		double az = adxl345_read_z();
-		double tmp2 = ds18b20_read_temperature();
+		_delay_ms(2000);
+		tmp2 = ds18b20_read_temperature();
 		
 		printf("Test data: prs=%f tmp1=%f ax=%f ay=%f az=%f tmp2=%f\r\n", prs, tmp1, ax, ay, az, tmp2);
     }

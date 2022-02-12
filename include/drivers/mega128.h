@@ -14,7 +14,8 @@
 
 /* CPU frequency */
 #ifndef F_CPU
-#define F_CPU 16000000L
+#warning "F_CPU is not defined"
+#define F_CPU 8000000L
 #endif
 
 #ifndef KERNEL_ARCH_H_
