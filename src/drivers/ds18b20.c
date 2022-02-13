@@ -2,7 +2,7 @@
  * ds18b20.c
  *
  * Created: 17.05.2019 17:58:11
- *  Author: ThePetrovich
+ * Author: ThePetrovich
  */ 
 
 
@@ -17,14 +17,14 @@ uint8_t ds18b20_reset(void)
 {
 	arch_enterCriticalSection();
 	
-	DS18B20_PORT &= ~(1 << DS18B20_PIN_DATA);
-	DS18B20_DDR |= (1 << DS18B20_PIN_DATA);
+	DS18_DQ_PORT &= ~(1 << DS18_DQ);
+	DS18_DQ_DDR |= (1 << DS18_DQ);
 	_delay_us(480);
 	
-	DS18B20_DDR &= ~(1 << DS18B20_PIN_DATA);
+	DS18_DQ_DDR &= ~(1 << DS18_DQ);
 	_delay_us(60);
 	
-	uint8_t i = (DS18B20_PIN & (1 << DS18B20_PIN_DATA));
+	uint8_t i = (DS18_DQ_PIN & (1 << DS18_DQ));
 	_delay_us(410);
 	
 	arch_exitCriticalSection();
@@ -36,15 +36,15 @@ static void ds18b20_write_bit(uint8_t value)
 {
 	arch_enterCriticalSection();
 	
-	DS18B20_PORT &= ~(1 << DS18B20_PIN_DATA);
-	DS18B20_DDR |= (1 << DS18B20_PIN_DATA);
+	DS18_DQ_PORT &= ~(1 << DS18_DQ);
+	DS18_DQ_DDR |= (1 << DS18_DQ);
 	_delay_us(6);
 	
 	if(value) 
-		DS18B20_DDR &= ~(1 << DS18B20_PIN_DATA);
+		DS18_DQ_DDR &= ~(1 << DS18_DQ);
 	_delay_us(60);
 	
-	DS18B20_DDR &= ~(1 << DS18B20_PIN_DATA);
+	DS18_DQ_DDR &= ~(1 << DS18_DQ);
 	
 	arch_exitCriticalSection();
 }
@@ -55,14 +55,14 @@ static uint8_t ds18b20_read_bit(void)
 	
 	arch_enterCriticalSection();
 	
-	DS18B20_PORT &= ~(1 << DS18B20_PIN_DATA);
-	DS18B20_DDR |= (1 << DS18B20_PIN_DATA);
+	DS18_DQ_PORT &= ~(1 << DS18_DQ);
+	DS18_DQ_DDR |= (1 << DS18_DQ);
 	_delay_us(6);
 	
-	DS18B20_DDR &= ~(1 << DS18B20_PIN_DATA);
+	DS18_DQ_DDR &= ~(1 << DS18_DQ);
 	_delay_us(10);
 	
-	if(DS18B20_PIN & (1 << DS18B20_PIN_DATA)) 
+	if(DS18_DQ_PIN & (1 << DS18_DQ)) 
 		value = 1;
 	_delay_us(55);
 	
@@ -92,8 +92,8 @@ static void ds18b20_write_byte(uint8_t value)
 void ds18b20_request_temperature(void)
 {
 	ds18b20_reset();
-	ds18b20_write_byte(DS_CMD_SKIPROM);
-	ds18b20_write_byte(DS_CMD_CONVERTTEMP);
+	ds18b20_write_byte(DS18_CMD_SKIPROM);
+	ds18b20_write_byte(DS18_CMD_CONVERTTEMP);
 }
 	
 double ds18b20_read_temperature(void)
@@ -104,8 +104,8 @@ double ds18b20_read_temperature(void)
 	double value = 0;
 	
 	ds18b20_reset();
-	ds18b20_write_byte(DS_CMD_SKIPROM);
-	ds18b20_write_byte(DS_CMD_RSCRATCHPAD);
+	ds18b20_write_byte(DS18_CMD_SKIPROM);
+	ds18b20_write_byte(DS18_CMD_RSCRATCHPAD);
 	
 	raw[0] = ds18b20_read_byte();
 	raw[1] = ds18b20_read_byte();

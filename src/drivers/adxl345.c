@@ -18,7 +18,7 @@ static uint8_t adxl345_read_register_1(uint8_t addr)
 	
 	spi_start(SPI_PRESCALER_16 | SPI_MSBFIRST | SPI_MODE3);
 	
-	adxl345_CSLOW();
+	adxl345_CS_LOW();
 	
 	/* Atomically read ADXL register, MSB must be 1 */
 	arch_enterCriticalSection();
@@ -26,7 +26,7 @@ static uint8_t adxl345_read_register_1(uint8_t addr)
 	response = spi_read_write(0xFF);
 	arch_exitCriticalSection();
 	
-	adxl345_CSHIGH();
+	adxl345_CS_HIGH();
 	
 	spi_stop();
 	
@@ -37,11 +37,15 @@ static void adxl345_write_register(uint8_t addr, uint8_t data)
 {
 	spi_start(SPI_PRESCALER_16 | SPI_MSBFIRST | SPI_MODE3);
 	
+	adxl345_CS_LOW();
+	
 	/* Atomically write ADXL register, MSB must be 0 */
 	arch_enterCriticalSection();
 	spi_write((addr & ~0x80));
 	spi_write(data);
 	arch_exitCriticalSection();
+	
+	adxl345_CS_HIGH();
 	
 	spi_stop();
 }
@@ -49,8 +53,8 @@ static void adxl345_write_register(uint8_t addr, uint8_t data)
 int adxl345_init()
 {
 	/* Init ADXL Chip Select pin */
-	ADXL345_DDR |= (1 << ADXL345_PIN_CS);
-	adxl345_CSHIGH();
+	ADXL345_CS_DDR |= (1 << ADXL345_CS);
+	adxl345_CS_HIGH();
 	
 	/* Check ADXL device ID, quit on mismatch */
 	if (adxl345_read_register_1(ADXL345_REG_DEVID) != ADXL345_ID) {
@@ -66,13 +70,9 @@ int adxl345_init()
 
 static double adxl345_read_acceleration(uint8_t addr0, uint8_t addr1)
 {
-	adxl345_CSLOW();
-		
 	/* Read acceleration high and low registers */
 	int16_t r0 = adxl345_read_register_1(addr0);
 	int16_t r1 = adxl345_read_register_1(addr1);
-		
-	adxl345_CSHIGH();
 		
 	r1 = r1 << 8;
 	r1 |= r0;

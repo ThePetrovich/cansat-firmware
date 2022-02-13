@@ -16,6 +16,7 @@
 #include <drivers/ds18b20.h>
 #include <drivers/adxl345.h>
 #include <drivers/mega128.h>
+#include <drivers/nrf24l01.h>
 #include <util/delay.h>
 #include <avr/io.h>
 #include <stdio.h>
@@ -41,6 +42,7 @@ int main(void)
 	printf("Hello from cansat-firmware test\r\n");
 	bmp280_init();
 	adxl345_init();
+	nrf24_init();
 	
 	double tmp1 = 0;
 	double prs = 0;

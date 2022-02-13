@@ -10,11 +10,7 @@
 #define YKTS_BOOT_UART_H_
 
 #include <stdint.h>
-
-#ifndef F_CPU
-    #warning "F_CPU is not defined"
-    #define F_CPU 8000000UL
-#endif
+#include <drivers/mega128.h>
 
 #ifndef UART_BAUD_PRESCALE
     #define UART_BAUD_PRESCALE(x) (((F_CPU / ((uint32_t)x * 16UL))) - 1)

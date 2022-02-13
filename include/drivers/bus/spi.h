@@ -10,6 +10,7 @@
 #define YKTS_BOOT_SPI_H_
 
 #include <stdint.h>
+#include <drivers/mega128.h>
 
 /* ATmega128 SPI port is on PORTB */
 #define SPI_PORT				PORTB
@@ -56,8 +57,8 @@
 #define SPI_RX_BUFFER_SIZE 32
 #define SPI_RX_BUFFER_MASK (SPI_RX_BUFFER_SIZE - 1)
 
-#define spi_CSLOW() SPI_PORT &= ~(1 << SPI_PIN_SS)
-#define spi_CSHIGH() SPI_PORT |= (1 << SPI_PIN_SS)
+#define spi_CS_LOW() SPI_PORT &= ~(1 << SPI_PIN_SS)
+#define spi_CS_HIGH() SPI_PORT |= (1 << SPI_PIN_SS)
 
 void spi_init(uint16_t flags);
 
@@ -65,7 +66,10 @@ void spi_start(uint16_t flags);
 void spi_stop(void);
 
 void spi_write(uint8_t data);
-uint8_t spi_read_write(uint8_t data);
 uint8_t spi_read(void);
+uint8_t spi_read_write(uint8_t data);
+
+void spi_write_burst(uint8_t *in, uint8_t size);
+void spi_read_write_burst(uint8_t *in, uint8_t *out, uint8_t size);
 
 #endif /* YKTS_BOOT_SPI_H_ */

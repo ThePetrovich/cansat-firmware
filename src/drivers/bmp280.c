@@ -35,7 +35,7 @@ static uint8_t bmp280_read_register_1(uint8_t addr)
 	
 	spi_start(SPI_PRESCALER_16 | SPI_MSBFIRST | SPI_MODE3);
 	
-	bmp280_CSLOW();
+	bmp280_CS_LOW();
 	
 	/* Atomically read BMP280 1-byte register, MSB must be 1 */
 	arch_enterCriticalSection();
@@ -43,7 +43,7 @@ static uint8_t bmp280_read_register_1(uint8_t addr)
 	response = spi_read_write(0x00);
 	arch_exitCriticalSection();
 	
-	bmp280_CSHIGH();
+	bmp280_CS_HIGH();
 	
 	spi_stop();
 	
@@ -56,7 +56,7 @@ static uint16_t bmp280_read_register_2(uint8_t addr)
 	
 	spi_start(SPI_PRESCALER_16 | SPI_MSBFIRST | SPI_MODE3);
 	
-	bmp280_CSLOW();
+	bmp280_CS_LOW();
 	
 	/* Atomically read BMP280 2-byte register, MSB must be 1 */
 	arch_enterCriticalSection();
@@ -65,7 +65,7 @@ static uint16_t bmp280_read_register_2(uint8_t addr)
 	response |= (spi_read_write(0x00) << 8);
 	arch_exitCriticalSection();
 	
-	bmp280_CSHIGH();
+	bmp280_CS_HIGH();
 	
 	spi_stop();
 	
@@ -78,7 +78,7 @@ static uint32_t bmp280_read_register_4(uint8_t addr)
 	
 	spi_start(SPI_PRESCALER_16 | SPI_MSBFIRST | SPI_MODE3);
 	
-	bmp280_CSLOW();
+	bmp280_CS_LOW();
 	
 	/* Atomically read BMP280 4-byte register, MSB must be 1 */
 	arch_enterCriticalSection();
@@ -90,7 +90,7 @@ static uint32_t bmp280_read_register_4(uint8_t addr)
 	response |= spi_read_write(0x00);
 	arch_exitCriticalSection();
 	
-	bmp280_CSHIGH();
+	bmp280_CS_HIGH();
 	
 	spi_stop();
 	
@@ -101,7 +101,7 @@ static void bmp280_write_register(uint8_t addr, uint8_t data)
 {
 	spi_start(SPI_PRESCALER_16 | SPI_MSBFIRST | SPI_MODE3);
 	
-	bmp280_CSLOW();
+	bmp280_CS_LOW();
 	
 	/* Atomically write BMP280 register, MSB must be 0 */
 	arch_enterCriticalSection();
@@ -109,7 +109,7 @@ static void bmp280_write_register(uint8_t addr, uint8_t data)
 	spi_write(data & ~0x80);
 	arch_exitCriticalSection();
 	
-	bmp280_CSHIGH();
+	bmp280_CS_HIGH();
 	spi_stop();
 }
 
@@ -133,8 +133,8 @@ static void bmp280_read_calibration(void)
 int bmp280_init(void)
 {
 	/* Init BMP280 Chip Select pin */
-	BMP280_DDR |= (1 << BMP280_PIN_CS);
-	bmp280_CSHIGH();
+	BMP280_CS_DDR |= (1 << BMP280_CS);
+	bmp280_CS_HIGH();
 	
 	/* Check BMP280 device ID, quit on mismatch */
 	if (bmp280_read_register_1(0x00) != BMP280_ID) {

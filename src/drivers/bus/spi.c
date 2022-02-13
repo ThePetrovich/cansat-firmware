@@ -10,6 +10,7 @@
 #include <drivers/bus/spi.h>
 #include <avr/io.h>
 #include <stdint.h>
+#include <stddef.h>
 
 void spi_init(uint16_t flags)
 {
@@ -55,6 +56,16 @@ void spi_write(uint8_t data)
 	while(!(SPSR & (1 << SPIF)));
 }
 
+void spi_write_burst(uint8_t *in, uint8_t size)
+{
+	/* Write multiple bytes from in */
+	if (in != NULL && size != 0) {
+		for (uint8_t i = 0; i < size; i++) {
+			spi_write(in[i]);
+		}
+	}
+}
+
 uint8_t spi_read_write(uint8_t data)
 {
 	/* Send data and wait for transmission */
@@ -62,6 +73,16 @@ uint8_t spi_read_write(uint8_t data)
 	while(!(SPSR & (1 << SPIF)));
 	/* Read SPDR and return */
 	return SPDR;
+}
+
+void spi_read_write_burst(uint8_t *in, uint8_t *out, uint8_t size)
+{
+	/* Write multiple bytes from in, put response into out */
+	if (in != NULL && out != NULL && size != 0) {
+		for (uint8_t i = 0; i < size; i++) {
+			out[i] = spi_read_write(in[i]);
+		}
+	}
 }
 
 uint8_t spi_read(void)

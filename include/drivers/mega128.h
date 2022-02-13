@@ -14,7 +14,6 @@
 
 /* CPU frequency */
 #ifndef F_CPU
-#warning "F_CPU is not defined"
 #define F_CPU 8000000L
 #endif
 
