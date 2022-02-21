@@ -58,11 +58,9 @@ char uart0_getc(void)
 	uint8_t rx_tail = 0;
 	char data = '\0';
 
-	arch_enterCriticalSection();
 	if (buf_rx_head == buf_rx_tail) {
 		return '\0';   /* RX buffer empty */
 	}
-	arch_exitCriticalSection();
 
 	/* Calculate buffer index, wrap on overflow */
 	rx_tail = (buf_rx_tail + 1) & UART_RX_BUFFER_MASK;
@@ -79,11 +77,9 @@ char uart0_peek(void)
 	uint8_t rx_tail = 0;
 	char data = '\0';
 
-	arch_enterCriticalSection();
 	if (buf_rx_head == buf_rx_tail) {
 		return '\0';   /* RX buffer empty */
 	}
-	arch_exitCriticalSection();
 
 	/* Calculate buffer index, wrap on overflow */
 	rx_tail = (buf_rx_tail + 1) & UART_RX_BUFFER_MASK;
