@@ -17,6 +17,8 @@ void spi_init(uint16_t flags)
 	arch_enterCriticalSection();
 
 	/* Setting up SPI pins - data directions to out, MISO pullup enabled */
+	/* Note: to use master mode you MUST set HW SS pin to output high (DDR = 1, PORT = 1) */
+	/* Otherwise SPIF bit is never set and nothing is transmitted */
 	SPI_DDR |= (1 << SPI_PIN_MOSI) | (1 << SPI_PIN_SCK) | (1 << SPI_PIN_SS);
 	SPI_DDR &= ~(1 << SPI_PIN_MISO);
 	SPI_PORT |= (1 << SPI_PIN_MISO) | (1 << SPI_PIN_SS);
